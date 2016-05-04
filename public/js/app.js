@@ -3,10 +3,17 @@ var room = getQueryVariable('room');
 
 var socket = io();
 
-console.log(name + ' wants to join ' + room);
+//console.log(name + ' wants to join ' + room);
+jQuery('.room-title').text(room);
 
 socket.on('connect', function () {
 	console.log('Connected to Socket.io Server');
+	socket.emit('joinRoom',{
+		name:name,
+		room:room
+	});
+		
+
 });
 
 socket.on('message', function (message) {
@@ -15,7 +22,7 @@ socket.on('message', function (message) {
 
 	console.log('New message:');
 	console.log(message.text);
-    
+   
 	$message.append('<p><strong> '+message.name+' </strong>' +'<strong>'+momentTimeStamp.local().format('h:mm a')+'</strong></p>');
 	$message.append('<p>'+message.text+'</p>');
 });
@@ -27,7 +34,7 @@ $form.on('submit',function (event) {
 	event.preventDefault();
 	var $message = $form.find('input[name=message]');
 	socket.emit('message',{
-		name:name,
+		name:name,		
 		text:$message.val()
 	});
 
